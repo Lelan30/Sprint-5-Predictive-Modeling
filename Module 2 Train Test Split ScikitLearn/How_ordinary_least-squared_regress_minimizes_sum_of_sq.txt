@@ -1,0 +1,73 @@
+#How ordinary least squared regression minimuzes sum squared
+
+#OLS method estimates the slope and intercept parameters for a line
+#that minimizes the sum squared distances between the line and observed data
+
+#MATH SUM OF SQUARES
+#To determine how well a given line fits the observed data:
+#sum the square of distance of each point from the line
+
+#start with equation
+#y = B0 + B1X
+
+#for each data point(i), find the value predicted
+#ypredict = B0 + b1xi
+
+#the error or residual between the actual value yi and the predicted ypredict
+#diff = yi - ypredict = yi - (B0 + B1xi)
+
+#sum over all the error values, square this difference and then add them up
+#SUM of sqaures = E(yi -(B0 + B1xi))^2
+
+#apply some math to SUM of squares equation to find values B0 and B1 that minumize sum
+#Parameter estimate: Least square
+#B1 = Cov(x,y) / Var(x)
+#B0 =_y - B1_x
+
+#_x and _y are mean values of x and y
+
+import numpy as np
+from sklearn.linear_model import LinearRegression
+
+#Generate sample data
+x = np.arange(25)
+delta = np.random.uniform(0, 20, size=(25,))
+y = 0.4 * x + 3 + delta
+
+def least_squares_params(x, y):
+
+  #x and y: data to be fit
+  #returns: the least-square values of alpha and beta
+
+  #Calculate mean of X and y
+  xmean = np.mean(x); ymean = np.mean(y)
+
+  #Calculate the covariance for X and y, variance for X
+  xycov = (x-xmean) * (y-ymean)
+  xvar = (x-xmean) ** 2
+
+  #Calculate coefficients
+  beta_1 = sum(xycov) / sum(xvar)
+  beta_0 = ymean - (beta_1*xmean)
+
+  print('beta_0: ', beta_0)
+  print('beta_1: ', beta_1)
+
+#Find the estimate parameters for alpha, beta
+#given out (x, y) data set
+least_squares_params(x, y)
+
+#Instantiate the class
+model = LinearRegression()
+
+X = x[:, np.newaxis]
+
+#fit the model
+model.fit(X, y)
+
+#intercept
+print('beta_0: ', model.intercept_)
+
+#slope
+print('beta_1: ', model.coef_)
+

@@ -1,0 +1,74 @@
+#Before the model is fit:
+#Encoding
+#Impute missing values
+#standardizing
+#normalizing variables
+#Applied to both the training data and the testing data
+
+#To streamline this process we use a PIPELINE:
+#sklearn.pipeline.Pipeline(): each step in the pipeline is tuple of the name and tranformer or estimator
+#StandardScaler and SVC: would result in: 
+#(pipe = Pipeline([('scaler', StandardScaler()), ('svc', SVC())])
+#or another function(names are set to lowercase of thier types automatically):
+#mke_pipe = mke_pipelines(StandardScaler(), SVC())
+
+import pandas as pd
+import seaborn as sns
+
+penguins = sns.load_dataset("penguins")
+
+penguins.dropna(inplace=True)
+
+display(penguins.head())
+
+#A few features to choose from here:
+#species,bill_length_mm,bill_depth_mm,flipper_length_mm, and body_mass_g
+#Our target='sex'
+
+#We have ONE categorical feature(species), and four NUMERIC features
+#Use OHE to transform (species) column into 3 OHE columns
+#target='sex' encode with LabelEncoder
+
+#Use OneHotEncoder() methos for species column
+#Use methos ColumnTransformer() methos to apply ohe to specified column
+
+from sklearn.compose import ColumnTransformer
+from sklearn.pipeline import Pipeline
+from sklearn.preprocessing import OneHotEncoder
+from sklearn.linear_model import LogisticRegression
+from sklearn.model_selection import train_test_split
+
+#Set-up OHE method
+categorical_features = ['species']
+categorical_transformer = Pipeline(steps=[('onehot', OneHotEncoder())])
+
+#Set-up preprocessing/column transformer
+preprocessor = ColumnTransformer(
+    transformers =[
+        ('cat', categorical_transformer, categorical_features)])
+
+#Append classifier to preprocessing pipeline
+#Now we have the full prediction pipeline
+clf = Pipeline(steps=[('preprocessor', preprocessor),
+                      ('classifier', LogisticRegression())])
+
+#Select features
+features = ['species', 'bill_length_mm', 'bill_depth_mm', 'flipper_length_mm', 'body_mass_g']
+X = penguins[features]
+
+#Encode the 'sex' column
+from sklearn import preprocessing
+le = preprocessing.LabelEncoder()
+penguins['sex_encode'] = le.fit_transform(penguins['sex'])
+
+#Set target array
+y = penguins['sex_encode']
+
+#Apply pipeline and fit the model
+#Seperate into training and testing sets
+X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.25)
+
+#Fit the model with out logistic regression calssifier
+clf.fit(X_train, y_train)
+print('model score: %.3f' % clf.score(X_test, y_test))
+

@@ -1,0 +1,62 @@
+import seaborn as sns
+
+geyser = sns.load_dataset("geyser")
+
+#Convert target labels to 0 or 1
+from sklearn.preprocessing import LabelEncoder
+le = LabelEncoder()
+
+#Create a new column with 0=long 1=short class labels
+geyser['kind_binary'] = le.fit_transform(geyser['kind'])
+display(geyser.head())
+
+
+#Follow th usual model fitting procedure
+#Create feature matrix and target array by importing LogisticRegression model
+#Instantiate the predictor class
+from sklearn.linear_model import LogisticRegression
+import numpy as np
+
+x = geyser['duration']
+X =  np.array(x)[:, np.newaxis]
+
+#Assign the target y
+y = geyser['kind_binary']
+
+#Fit the model
+model = LogisticRegression()
+model.fit(X, y)
+
+
+#Import the cross validation method
+from sklearn.model_selection import cross_val_score
+
+#Implement a cross-validation with k=5
+print(cross_val_score(model, X, y, cv=5))
+
+#Calculate the mean of the cross_validation scores
+score_mean = cross_val_score(model, X, y, cv=5).mean()
+print('The mean CV score is: ', score_mean)
+
+
+#Accurate model improved from 63% to 97%
+
+#Add feature matrix, fit the model, and calculate the cross_validation score
+
+#Create the feature matrix
+features = ['duration', 'waiting']
+X_two = geyser[features]
+
+#Fit the model 
+model_two = LogisticRegression()
+model_two.fit(X_two, y)
+
+#Implement a cross_validation wit k=5
+print(cross_val_score(model_two, X_two, y, cv=5))
+
+#Calculate mean of cross_val_score
+score_mean = cross_val_score(model_two, X_two, y, cv=5).mean()
+print('The mean CV score is: ', score_mean)
+
+#The accuracy is perfect for this model (1). Likely because these two classes have
+#a very clear division. Not ALL dataset will be easy to model with such accuracy

@@ -1,0 +1,73 @@
+#Logistic Regression: based on the sigmoid funtion which is an s-shaped curve.
+#most of the range of a sigmoid funtion is either 0 or 1.
+#find the coef_ that best fit the line
+
+#P(yi = 1) = 1 / 1 + e - (B0 + B1x)
+#P(yi = 1): the probability of observation i being in class 1.
+#coef_ B0 and B1 determine the shape of the function and what we are trying to fit when
+#modeling data
+
+import seaborn as sns
+import matplotlib.pyplot as plt
+import numpy as np
+
+geyser = sns.load_dataset("geyser")
+
+#Choose one feature (duration)
+x = geyser['duration']
+
+#Import the label encoder and encode 'kind' column
+from sklearn.preprocessing import LabelEncoder
+le = LabelEncoder()
+
+#Create new column with 0=long and 1=short class labels
+geyser['kind_binary'] = le.fit_transform(geyser['kind'])
+display(geyser.head())
+
+#Assign the target variable to y
+y = geyser['kind_binary']
+
+#plot datat for 'duration'
+plt.scatter(x, y)
+plt.yticks([0, 1])
+plt.xlabel('x (geyser duration - minutes)'); plt.ylabel('kind of eruption')
+plt.title('Geyser duration')
+
+#Use the sigmoid funtion with coef_ from model that fit data above.
+#assign coef_ to variables then plot
+
+#Assign coef_ from previous fit model
+beta_0 = 11.32
+beta_1 = -3.65
+
+#Define the sigmoid with coef_
+def sigmoid_beta(x, beta_0, Beta_1):
+  exp = beta_0 + Beta_1 * x
+  return 1 / (1 + np.e**(-exp))
+
+x_model_plot = np.linspace(1, 6, 100)
+y_model = sigmoid_beta(x_model_plot, beta_0, beta_1)
+
+#plot the function generated above
+plt.scatter(x, y)
+plt.plot(x_model_plot, y_model, color='green', label='model')
+plt.xlabel('x (geyser duration - minutes)'); plt.ylabel('P(y=1 )')
+plt.legend()
+plt.title('Geyser Eruption with Model')
+
+plt.show()
+
+#Use this funtion with model params to make and interpret a prediction
+#hypothetical (3.25 mins timed eruption)
+#probability for the observation belongs to class=1(short eruption)
+#values for x(3.25) along with coef_
+#P(yi = 1) = 1 / 1 + e - (B0 + B1x)
+#P(yi = 1 when x = 3.25) = 1 / 1 + e - (11.32 - 3.65 * 3.25)
+
+#plug in above values
+sigmoid_beta(3.25, beta_0, beta_1)
+
+#Interpret Results:
+#The probability of belonging to class=1(short) is 37%
+#The probability of the observation belonging to class=0(long) is 63%. (100 - 37)
+#Our model predicts and eruption lasting 3.25 minutes would belong to the long class of eruptions

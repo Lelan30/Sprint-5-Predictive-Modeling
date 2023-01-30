@@ -1,0 +1,66 @@
+#Train-Validation-Test
+#Training dataset: the sample data used to fit model
+#Validation dataset: the sample data used to evaluate the model and possibly to adjust the hyperparams
+#Testing dataset: the sample of data used for final model testing; not to be used for anything other than
+#testing so that the result is unbiased
+
+#MAY NOT HAVE TO ACCESS TEST SET
+#(Kaggle competitions: Cannot view actual target values for the test data, and can only generate predictions)
+#(The number of test prediction submissions might be limited)
+#(Might not wan to make numerous test submissions just to evaluate or tune your model)
+
+#Create your own train-validation-test data sets.
+#(follow guideline of using 60% for training and 20% for validation for testing)
+
+import numpy as np 
+import seaborn as sns
+
+iris = sns.load_dataset("iris")
+display(iris.head())
+
+X = iris['petal_width']
+X = np.array(X)[:, np.newaxis]
+y = iris['petal_length']
+
+#import the train_test_split utility
+from sklearn.model_selection import train_test_split
+
+#Create the "remaining" and test datasets
+X_remain, X_test, y_remain, y_test = train_test_split(X, y, 
+                                                      test_size=0.2, random_state=42)
+
+#Create the train and validation datasets
+X_train, X_val, y_train, y_val = train_test_split(X_remain, y_remain,
+                                                  test_size=0.25, random_state=42)
+
+#Print out sizes of train, validate, test datasets
+print('Training data set samples:' , len(X_train))
+print('Validation data set samples:' , len(X_val))
+print('Test data set samples:' , len(X_test))
+
+#Import the predictor and instatiate the class
+from sklearn.linear_model import LinearRegression
+
+#Instatiate the class
+model = LinearRegression()
+
+#Fit the model
+model.fit(X_train, y_train)
+
+#Use VALIDATION set for prediction
+y_predict = model.predict(X_val)
+
+#Calculate the accuracy score
+from sklearn.metrics import r2_score
+r2_score(y_val, y_predict)
+
+#This is a good r2 model (close to 1)
+
+#Use the TEST set for predictions
+y_pred_test = model.predict(X_test)
+
+#Calculate accuracy score
+r2_score(y_test, y_pred_test)
+
+#Now the r2 is a bit lower than the validation set.
+#With a different random seed the scores would be different and the test might be higher

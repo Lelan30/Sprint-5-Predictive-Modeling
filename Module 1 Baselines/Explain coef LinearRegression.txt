@@ -1,0 +1,64 @@
+import pandas as pd
+import numpy as np
+import seaborn as sns
+
+penguins = sns. load_dataset("penguins")
+
+penguins.dropna(inplace=True)
+
+#Create the 2D feature matrix
+X_penguins = penguins['flipper_length_mm']
+X_penguins_2D = X_penguins[:, np.newaxis]
+
+#Create the target array
+y_penguins = penguins['body_mass_g']
+
+#Import estimator class
+from sklearn.linear_model import LinearRegression
+
+#Instantiate the class
+model = LinearRegression()
+
+#display model
+model
+
+#Display shape of X_penguins
+print('Origional feature matrix: ', X_penguins.shape)
+
+#Add new axis to create column vector
+X_penguins_2D = X_penguins[:, np.newaxis]
+print(X_penguins_2D.shape)
+
+#Fit the model
+model.fit(X_penguins_2D, y_penguins)
+
+#Look at coefficients
+#Slope(also colled model coef)
+print(model.coef_)
+
+#Intercept
+print(model.intercept_)
+
+#in equation form
+print(f'\n body_mass_g = {model.coef_[0]} * flipper_length_mm + ({model.intercept_})')
+
+#We have the coef of the line!
+#plot this line along our data
+
+#Generate the line from the model coef
+x_line = np.linspace(170,240)
+y_line = model.coef_ * x_line + model.intercept_
+
+#import plottling libraries
+import matplotlib.pyplot as plt
+
+# Create the figure and axes objects
+fig, ax = plt.subplots(1)
+ax.scatter(x = X_penguins, y = y_penguins, label="Observed data")
+ax.plot(x_line, y_line, color='g', label="linear regression model")
+ax.set_xlabel('Penguin flipper length (mm)')
+ax.set_ylabel('Penguin weight (g)')
+ax.legend()
+
+plt.show()
+plt.clf() 

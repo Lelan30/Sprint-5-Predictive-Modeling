@@ -1,0 +1,57 @@
+#Generate apractical data set
+import numpy as np
+
+np.random.seed(15)
+x = 5 * np.random.rand(50)
+y = abs(0.5*np.sin(x) + 0.5 * np.random.rand(50)) * 10
+
+#Create the feature matrix
+X = x[:, np.newaxis]
+
+#Fit a linear regression model
+from sklearn.linear_model import LinearRegression, Ridge
+model = LinearRegression()
+model.fit(X, y)
+
+#create the data for the model (best-fit line)
+xfit = np.linspace(0, 5, 1000)
+Xfit = xfit[:, np.newaxis]
+yfit = model.predict(Xfit)
+
+#Fit a linear regression to polynomial features
+from sklearn.preprocessing import PolynomialFeatures
+from sklearn.pipeline import make_pipeline
+
+poly_model = make_pipeline(PolynomialFeatures(15), LinearRegression())
+
+#Create the data for the model (best-fit line)
+poly_model.fit(x[:, np.newaxis], y)
+yfit_poly = poly_model.predict(xfit[:, np.newaxis])
+
+#Fit a ridge regression with polynomial features
+from sklearn.preprocessing import StandardScaler
+
+ridge_model = make_pipeline(PolynomialFeatures(15), 
+                            StandardScaler(),Ridge(alpha = 0.05))
+ridge_model.fit(x[:, np.newaxis], y)
+
+#Create the data for the model (best-fit line)
+yfit_ridge = ridge_model.predict(xfit[:, np.newaxis])
+
+#Create a plot with data
+import matplotlib.pyplot as plt
+
+fig, ax = plt.subplots(figsize=(10, 5))
+ax.scatter(x, y)
+
+ax.plot(xfit, yfit, linestyle='--', label='linear regression')
+ax.plot(xfit, yfit_poly, linestyle= '-.', label='linear regression (polynomial)')
+ax.plot(xfit, yfit_ridge, label='ridge regression')
+
+ax.set_ylim([0, 10])
+
+ax.set_xlabel("Hours after opening")
+ax.set_ylabel('Ice Cream Sales')
+ax.legend();
+
+fig.clf

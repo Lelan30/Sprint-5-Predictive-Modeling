@@ -1,0 +1,43 @@
+#BaseLine: a common definition of a baseline is a starting point from which to make comparisions.
+#(if we fit a model to data, we need a starting point from which to make our comparisions)
+
+#Metrics we can use for a BaseLine:
+#"Rule of Thumb" - Previous knowledge or commonly known info)
+#"Descriptive Statistics" - Mean, Minumim, Maximum or the variable
+#"Fitting a sample model" - Linear Regression
+
+#Weight of a penguin flipper#
+#On average, for about every 20mm increase in flipper length,
+#the weight of the flipper increases by about 1000g(1kg)...
+
+#'One' penguins flipper length is 220mm, weight is 5000g(5kg).
+#'Two' penguin flipper length is 190mm, weight is ???
+#since we have an increase of 1000g / 20mm and the second flipper,
+#is 30mm shorter the weight would be 5000g - 1500g = 3500g
+
+#Baseline of 1000g/20mm
+
+
+import seaborn as sns
+import matplotlib.pyplot as plt
+
+penguins = sns.load_dataset("penguins")
+
+sns.regplot(x='flipper_length_mm', y='body_mass_g', data= penguins, fit_reg=True)
+
+plt.show()
+plt.clf
+
+#(Seaborn doesnt show origional equation) Add gridlines to the plt or use scikit learn linear regression estimator
+
+#Same data as above but with added lines
+
+ax = sns.regplot(x='flipper_length_mm', y='body_mass_g', data= penguins, fit_reg=True)
+plt.axvline(x = 190, color='red', linewidth=0.75)
+plt.axhline(y = 3500, color='red', linewidth=0.75 )
+
+plt.show()
+plt.clf
+
+#Where the lines intersect is what we guessed our penguin weight to be,
+#based on our prior knowledge of a general flipper length to weight ratio.

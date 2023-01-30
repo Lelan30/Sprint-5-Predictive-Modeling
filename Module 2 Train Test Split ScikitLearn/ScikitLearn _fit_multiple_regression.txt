@@ -1,0 +1,65 @@
+import pandas as pd
+import seaborn as sns
+import numpy as np
+from sklearn.linear_model import LinearRegression
+import matplotlib.pyplot as plt
+from mpl_toolkits.mplot3d import Axes3D
+from matplotlib import cm
+
+penguins = sns.load_dataset("penguins")
+display(penguins.head())
+
+penguins.dropna(inplace=True)
+
+#create 2D feature matrix
+features = ['flipper_length_mm', 'bill_length_mm']
+X_penguins = penguins[features]
+
+#Create Target vector
+y_penguins = penguins['body_mass_g']
+
+#Import estimator class (above)
+
+#Instantiate the class
+model = LinearRegression()
+
+model.fit(X_penguins, y_penguins)
+
+#slope
+print(model.coef_)
+
+#intercept
+print(model.intercept_)
+
+#substitute in our coefficients
+#y = -5836 + 49X1 + 5X2
+
+#plot data
+x_flipper = penguins['flipper_length_mm']
+y_bill = penguins['bill_length_mm']
+z_weight = penguins['body_mass_g']
+
+#Create the data to plot the best_fit line
+(x_plane, y_plane) = np.meshgrid(np.arange(165, 235, 1), np.arange(30, 60, 1))
+z_plane = -5836 + 49*x_plane + 5*y_plane
+
+#Initial the figure and axes objects
+fig = plt.figure(figsize = (6, 6))
+ax = fig.add_subplot(111, projection='3d')
+
+#Plot the data: 2 features 1 target
+ax.scatter(xs=x_flipper, ys=y_bill,zs=z_weight, zdir='z',
+           s=20, c=z_weight, cmap=cm.viridis)
+
+#plot the best fit line
+ax.plot_surface(x_plane, y_plane, z_plane, color='grey', alpha=0.5)
+
+#General figure/axes properties
+ax.view_init(elev=28, azim=325)
+ax.set_xlabel('Flipper Length')
+ax.set_ylabel('Bill Length')
+ax.set_zlabel('Body Mass')
+fig.tight_layout()
+
+plt.show()
+plt.clf()

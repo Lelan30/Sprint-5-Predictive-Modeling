@@ -1,0 +1,49 @@
+#Univariant feature selection process: the process of looking at each feature
+#individually and measuring the strength of its relationship with the target.
+#For a Linear Regression, take each independant feature and seperately measure
+#the strength of the linear correlation with the dependant
+
+import pandas as pd
+import seaborn as sns
+import numpy as np
+
+penguins = sns.load_dataset("penguins")
+
+penguins.dropna(inplace=True)
+
+#Create feature matrix
+features = ['bill_length_mm', 'bill_depth_mm', 'flipper_length_mm']
+X= penguins[features]
+
+#Create target array
+y = penguins['body_mass_g']
+
+#import the train_test_split untility
+from sklearn.model_selection import train_test_split
+
+#Create the training model
+X_train, X_test, y_train, y_test = train_test_split(
+    X, y, test_size=0.2, random_state=42)
+
+#SelectKBest from sklearn.feature_selection module:
+#makes it easier to remember... selects the k best feature where k is an integer
+
+#import feature selection utility
+from sklearn.feature_selection import SelectKBest, f_regression
+
+#Create the selector object with best k=1, k=1
+selector = SelectKBest(score_func=f_regression, k=1)
+
+#Run the selector on the training data
+X_train_selected = selector.fit_transform(X_train, y_train)
+
+#Find features that were selected
+selected_mask = selector.get_support()
+all_features = X_train.columns
+selected_feature = all_features[selected_mask]
+
+print('The selected feature: ', selected_feature[0])
+
+#The flipper body length seems to be the best feature to include when trying
+#to predict the penguins body mass
+

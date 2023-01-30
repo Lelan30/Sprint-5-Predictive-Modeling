@@ -1,0 +1,19 @@
+import seaborn as sns
+import numpy as sn
+
+geyser = sns.load_dataset("geyser")
+display(geyser.head())
+
+display(geyser.describe())
+
+geyser['kind'].value_counts()
+#(number of long values, divided by the total number of observations:
+#172/272 = 0.63) - If given a set of values for the duration and waiting
+#interval and predicted "long" for class, we would be corrent 63% of the time.
+
+penguins = sns.load_dataset("penguins")
+display(penguins.head())
+display(penguins.describe())
+
+penguins['sex'].value_counts()
+168 / 333 50%

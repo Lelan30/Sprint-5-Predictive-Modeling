@@ -1,0 +1,67 @@
+#Train Test Split: train some percentage of the dataset(fit the model on the training set)
+#then test with the data not yet seen by the model(test set)
+#"Holding Back" using holdout set or a subset
+
+#Good starting place is 80/20 split. Scikit Learn default is 75/25.#
+
+import pandas as pd
+import numpy as np
+import seaborn as sns
+
+penguins = sns.load_dataset("penguins")
+
+penguins.dropna(inplace = True)
+
+#Create 2D Matrix
+X_penguins = penguins['flipper_length_mm']
+X_penguins_2D = X_penguins[:, np.newaxis]
+
+#Create Target Vector
+y_penguins = penguins['body_mass_g']
+
+#Create Training and Test Sets
+#Using the feature matrix and target vector we just created,
+#we will split the dataset 80/20 using "test_size" parameter of 0.2.
+#the random state parameter is used to return the same set of training and testing each time.
+#(leave random_state out if you want a different random set each time)
+
+#Import train_test_split utility
+from sklearn.model_selection import train_test_split
+
+#Create training and test sets
+X_train, X_test, y_train, y_test = train_test_split(
+    X_penguins_2D, y_penguins, test_size=0.2, random_state=42)
+
+print('The training and test feature: ', X_train.shape, y_train.shape)
+print('The training test target: ', X_test.shape, y_test.shape)
+
+#Import predictor class
+from sklearn.linear_model import LinearRegression
+
+#Instantiate the class
+model = LinearRegression()
+
+#fit the model
+model.fit(X_train, y_train)
+
+#Slope also called coef_
+print(model.coef_)
+
+#Intercept
+print(model.intercept_)
+
+#print equation
+print(f'\n body_mass_g ={model.coef_[0]} * flipper_length_mm + ({model.intercept_})')
+
+#Making Predictions:
+#perform accuracy test of the model.
+#for now, we will test model using r2_score or r-squared value
+#(r-squared: how close data is to fitten regression line... 
+#(100% or 1 means the model explains all of the variation around the mean)
+
+#use the test set for prediction
+y_predict = model.predict(X_test)
+
+#Calculate the accuracy score
+from sklearn.metrics import r2_score
+r2_score(y_test, y_predict)

@@ -1,0 +1,27 @@
+import seaborn as sns
+
+penguins = sns.load_dataset("penguins")
+display(penguins.head())
+
+#Find the number of classes in species
+penguins['island'].unique()
+
+#We have three species, import sklearn.preprocessing.OneHotEncoder() transformer.
+#Reshape arrays to 2D using np.newaxis
+
+import numpy as np
+
+#Select and reshape input array
+island = penguins.island[:, np.newaxis]
+
+#Import encoder
+from sklearn.preprocessing import OneHotEncoder
+
+#Instantiate the encoder as an object
+enc = OneHotEncoder(sparse=False)
+
+#Use the fit_transform method (2 in 1)
+onehot = enc.fit_transform(island)
+
+#Display every 25th row
+onehot[::25]

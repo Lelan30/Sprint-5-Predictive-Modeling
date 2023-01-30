@@ -1,0 +1,23 @@
+#Regularization: reduce the variance in a model with a 'shrinkage' penalty
+#"Or to add information or bias to prevent overfitting"
+
+#Ridge Regression and Lasso:
+#Ridge Regression: uses the penaly where the tuning perameter is multiplied by
+#the squared sum of all coefficients(L2)
+
+#Lasso Regression: the penalty is tuning parameters multiplied by
+#the sum of absolute values of all coeffiecients(L1)
+
+#Ridge Regression Model determines the parameters that minimize the
+#residual sum of sqaued(RSS). Basically, minimize the RSS plus some penalty 
+#multiplied by the sum of squares of the coef
+
+#The larger the penalty the more parameters penalized
+#penalties are (lambda and aplha)
+
+#ride refers to the shape of a function were trying to minimize
+
+#Standardization: if the variables are on different scales, the larger the variable
+#will have different contribution to penalized term(larger alpha or lambda)
+#example: if predicting weight frim height, if height is in meters, a change of one
+#unit will be a large change in weight and visa versa.
